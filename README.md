@@ -30,7 +30,7 @@ This project was developed as part of the **Computer Architecture** course at un
 ```bash
 StateMachineController/
 │
-├── logic.ino        # Entry point: contains setup() and loop()
+├── stekch.ino        # Entry point: contains setup() and loop()
 ├── LCD.ino            # LCD initialization and message functions
 ├── Keypad.ino         # Keypad configuration
 ├── Buzzer.ino         # Buzzer setup and control
