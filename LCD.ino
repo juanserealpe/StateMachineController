@@ -14,6 +14,7 @@ void showAccessGranted() {
   lcd.clear();
   lcd.setCursor(0, 0);
   lcd.print("Acceso concedido");
+  delay(1500);
 }
 
 void showAccessDenied() {
@@ -23,7 +24,15 @@ void showAccessDenied() {
   delay(1500);
 }
 
+void showBlockSystem() {
+  lcd.clear();
+  lcd.setCursor(0, 0);
+  lcd.print("Bloqueado");
+  delay(2000);
+}
+
 void printAsterisk(int pos) {
   lcd.setCursor(pos, 1);
   lcd.print("*");
 }
+
