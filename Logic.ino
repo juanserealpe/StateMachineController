@@ -1,13 +1,8 @@
-// States's system
-enum SystemState {
-  STATE_WAITING_INPUT,
-  STATE_PROCESSING,
-  STATE_ACCESS_GRANTED,
-  STATE_ACCESS_DENIED,
-  STATE_BLOCKED
-};
+#include "States.h"
+
 //Current state:
 SystemState currentState = STATE_WAITING_INPUT;
+
 
 int failedAttempts = 0;
 String inputPassword = "";
@@ -44,8 +39,9 @@ void checkPassword() {
   else if (inputPassword == correctPassword) {
     currentState = STATE_ACCESS_GRANTED;
     showAccessGranted();
+    updateTemperature(); 
     failedAttempts = 0;
-    delay(1500);
+    delay(2500);
   } 
   else {
     currentState = STATE_ACCESS_DENIED;

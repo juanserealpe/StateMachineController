@@ -7,15 +7,16 @@ void setupLCD() {
 void showWelcomeMessage() {
   lcd.clear();
   lcd.setCursor(0, 0);
-  lcd.print("Ingresa clave:");
+  lcd.print("Ingresa clave");
 }
 
 void showAccessGranted() {
   lcd.clear();
   lcd.setCursor(0, 0);
-  lcd.print("Acceso concedido");
-  delay(1500);
+  lcd.print("Acceso OK");
+  delay(1000); // solo para mostrar brevemente
 }
+
 
 void showAccessDenied() {
   lcd.clear();
@@ -34,5 +35,10 @@ void showBlockSystem() {
 void printAsterisk(int pos) {
   lcd.setCursor(pos, 1);
   lcd.print("*");
+}
+
+void clearLine(int line) {
+  lcd.setCursor(0, line);
+  lcd.print("                "); // 16 espacios
 }
 

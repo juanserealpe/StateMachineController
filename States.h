@@ -1,0 +1,12 @@
+#ifndef STATES_H
+#define STATES_H
+
+enum SystemState {
+  STATE_WAITING_INPUT,
+  STATE_PROCESSING,
+  STATE_ACCESS_GRANTED,
+  STATE_ACCESS_DENIED,
+  STATE_BLOCKED
+};
+
+#endif
