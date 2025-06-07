@@ -19,7 +19,7 @@ void printAsterisk(byte pos);
 void ShowMessage(const char* pMessage, unsigned long pTime);
 void ShowMessage(const char* pMessage);
 //Updtate & restart.
-void UpdateLCDMessage();
+void updateLCDMessage();
 void RestartOutput();
 void RestartAll();
 #endif

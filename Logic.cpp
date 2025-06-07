@@ -85,13 +85,14 @@ void onMonitoring(){
   return;
 }
 void onAlarm(){
-  //soundAlarm();
+  soundAlarm();     
+  startRGBAlarm();  
   alarmCount++;
   if(alarmCount == 3){
     changeState(INPUT_WRONG);
   }
-  return;
 }
+
 void onPMVHigh(){
   return;
 }

@@ -17,11 +17,11 @@ void setup() {
   setupRFID();   
   setupBuzzer();     
   setupTemperature(); 
-  //setupLCD();
 }
 
 void loop() {
   stateMachine.Update();
-  UpdateLCDMessage();
+  updateLCDMessage();
   updateAlarm();
+  startRGBAlarm();
 }

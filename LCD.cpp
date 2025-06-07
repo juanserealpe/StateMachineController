@@ -51,7 +51,7 @@ void ShowMessage(const char* pMessage){
   ShowingMessage = true;
 }
 
-void UpdateLCDMessage(){
+void updateLCDMessage(){
   if(!ShowingMessage) return;
   if(TimeStart == 0) return;
   if((millis() - TimeStart) < TimeMessage) return;
