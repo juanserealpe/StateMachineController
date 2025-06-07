@@ -23,4 +23,5 @@ void setup() {
 void loop() {
   stateMachine.Update();
   UpdateLCDMessage();
+  updateAlarm();
 }

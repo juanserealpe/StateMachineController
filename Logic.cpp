@@ -5,6 +5,9 @@
 #include "RGBLed.h"
 #include <Arduino.h>
 #include "RFID.h"
+#include "Buzzer.h"
+
+int alarmCount = 0; 
 
 #define ARRAY_SIZE 4
 
@@ -82,6 +85,11 @@ void onMonitoring(){
   return;
 }
 void onAlarm(){
+  //soundAlarm();
+  alarmCount++;
+  if(alarmCount == 3){
+    changeState(INPUT_WRONG);
+  }
   return;
 }
 void onPMVHigh(){

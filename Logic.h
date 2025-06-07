@@ -5,6 +5,7 @@
 #include <Keypad.h>
 #include "states.h"
 //Externse
+extern int alarmCount;
 extern byte indx;
 extern char key;
 extern byte inputIndex;
