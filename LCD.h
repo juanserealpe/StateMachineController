@@ -13,6 +13,7 @@ void showWelcomeMessage();
 void showAccessGranted();
 void showAccessDenied();
 void showBlockSystem();
+void showMonitoringSystem();
 void printAsterisk(byte pos);
 //ShowMessageCustom
 void ShowMessage(const char* pMessage, unsigned long pTime);
@@ -20,4 +21,5 @@ void ShowMessage(const char* pMessage);
 //Updtate & restart.
 void UpdateLCDMessage();
 void RestartOutput();
+void RestartAll();
 #endif

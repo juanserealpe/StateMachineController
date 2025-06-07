@@ -1,6 +1,6 @@
 #include "LCD.h"
 #include <Arduino.h>
-#define MessageDuration 500
+#define MessageDuration 1500
 
 LiquidCrystal lcd(12, 11, 5, 4, 3, 2);
 
@@ -22,11 +22,14 @@ void showAccessGranted() {
 
 
 void showAccessDenied() {
-  ShowMessage("Clave incorrecta");
+  ShowMessage("Clave incorrecta", MessageDuration);
 }
 
 void showBlockSystem() {
   ShowMessage("Bloqueado");
+}
+void showMonitoringSystem() {
+  ShowMessage("Monitoreando");
 }
 
 void printAsterisk(byte pos) {
@@ -34,12 +37,13 @@ void printAsterisk(byte pos) {
   lcd.print("*");
 }
 void ShowMessage(const char* pMessage, unsigned long pTime){
-  RestartOutput();
-  TimeMessage = pTime;
-  lcd.print(pMessage);
+
+  if(TimeStart == 0) ShowingMessage = false;
+  ShowMessage(pMessage);
   TimeStart = millis();
-  ShowingMessage = true;
-}
+  TimeMessage = pTime;
+  return;
+} 
 void ShowMessage(const char* pMessage){
   if(ShowingMessage) return;
   RestartOutput();
@@ -49,12 +53,17 @@ void ShowMessage(const char* pMessage){
 
 void UpdateLCDMessage(){
   if(!ShowingMessage) return;
+  if(TimeStart == 0) return;
   if((millis() - TimeStart) < TimeMessage) return;
-  RestartOutput();
+  RestartAll();
 }
 
 void RestartOutput(){
   lcd.clear();
   lcd.setCursor(0, 0);
+}
+void RestartAll(){
+  RestartOutput();
   ShowingMessage = false;
+  TimeStart = TimeMessage = 0 ; 
 }

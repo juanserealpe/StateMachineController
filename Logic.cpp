@@ -41,7 +41,8 @@ void checkPassword() {
   if(Equals(inputPassword, correctPassword)){
     Serial.println("Contraseña correcta");//
     showAccessGranted();
-    changeState(INPUT_CORRECT);}
+    changeState(INPUT_CORRECT);
+    }
   else incorrectPassword();
 }
 
@@ -49,20 +50,18 @@ void incorrectPassword(){
   Serial.println("Contraseña incorrecta");//
   showAccessDenied();
   failedAttempts++;
+  Serial.println(failedAttempts);//
   ResetVars();
   ResetPassword();
 }
 void onInit() {
   showWelcomeMessage();
-  if(failedAttempts == 3){
-    changeState(INPUT_WRONG);
-    showBlockSystem();
-  } 
+  if(failedAttempts == 3) changeState(INPUT_WRONG);
   else { if(readKeypad()) handleKey(); }
 }
 
 void onBlocked(){
-  onBlocked();
+  showBlockSystem();
   if(readKeypad()) { 
     if(key == '#') {
       changeState(INPUT_NULL);  
@@ -70,9 +69,7 @@ void onBlocked(){
   }
 }
 void onMonitoring(){
-  showAccessGranted();
   short varTargetValue = readTarget();
-
   if(varTargetValue > 1){
       changeState(INPUT_PMV_HIGH);
   }
@@ -82,7 +79,6 @@ void onMonitoring(){
   if(varTargetValue < -1){
       changeState(INPUT_PMV_LOW);
   }
-
   return;
 }
 void onAlarm(){
