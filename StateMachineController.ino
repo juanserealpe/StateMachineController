@@ -20,6 +20,7 @@ void setup() {
 }
 
 void loop() {
+  updateTimeExecute();
   stateMachine.Update();
   updateLCDMessage();
   updateAlarm();

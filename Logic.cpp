@@ -7,10 +7,9 @@
 #include "RFID.h"
 #include "Buzzer.h"
 
-int alarmCount = 0; 
-
 #define ARRAY_SIZE 4
 
+byte alarmCount = 0; 
 char key;
 byte inputIndex = 0;
 byte failedAttempts = 0;
@@ -40,9 +39,9 @@ bool Equals(char* pChar1, char* pChar2) {
 }
 
 void checkPassword() {
-  Serial.println("Checando Password");
+  Serial.println("Checando Password");//Delete
   if(Equals(inputPassword, correctPassword)){
-    Serial.println("Contraseña correcta");//
+    Serial.println("Contraseña correcta");//Delete
     showAccessGranted();
     changeState(INPUT_CORRECT);
     }
@@ -50,10 +49,10 @@ void checkPassword() {
 }
 
 void incorrectPassword(){
-  Serial.println("Contraseña incorrecta");//
+  Serial.println("Contraseña incorrecta");//Delete
   showAccessDenied();
   failedAttempts++;
-  Serial.println(failedAttempts);//
+  Serial.println(failedAttempts);//Delete
   ResetVars();
   ResetPassword();
 }
@@ -68,36 +67,35 @@ void onBlocked(){
   if(readKeypad()) { 
     if(key == '#') {
       changeState(INPUT_NULL);  
-      }
+    }
   }
 }
 void onMonitoring(){
+  showMonitoringSystem();
   short varTargetValue = readTarget();
-  if(varTargetValue > 1){
-      changeState(INPUT_PMV_HIGH);
+  if(varTargetValue > 1) changeState(INPUT_PMV_HIGH);
+  else {
+    if(varTargetValue < -1) changeState(INPUT_PMV_LOW);
   }
-  if(varTargetValue == -5){
-      return;  
-  }
-  if(varTargetValue < -1){
-      changeState(INPUT_PMV_LOW);
-  }
-  return;
 }
 void onAlarm(){
-  soundAlarm();     
-  startRGBAlarm();  
-  alarmCount++;
-  if(alarmCount == 3){
-    changeState(INPUT_WRONG);
+  if(alarmCount == 3) changeState(INPUT_WRONG);
+  else {
+    soundAlarm();     
+    startRGBAlarm();  
+    alarmCount++;
   }
 }
 
 void onPMVHigh(){
-  return;
+  startTime();
+  if(stateTime >= 7000) changeState(INPUT_CORRECT);
+  else ShowGreen();
 }
 void onPMVLow(){
-  return;
+  startTime();
+  if(stateTime >= 4000) changeState(INPUT_CORRECT);
+  else ShowBlue();  
 }
 
 void changeState(Input newInput){
@@ -112,6 +110,7 @@ void ResetVars(){
 }
 void ResetAll(){
   failedAttempts = 0;
+  restartTimes();
   ResetPassword(); 
   ResetVars();
 }

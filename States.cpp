@@ -6,9 +6,9 @@ StateMachine stateMachine(NUM_STATES, 14);
 
 Input currentInput = INPUT_NULL;
 unsigned long stateEntryTime = 0;
-byte stateTime = 0;
+unsigned long stateTime = 0;
 
- void setupStateMachine() {
+void setupStateMachine() {
     // Transiciones desde INIT
     stateMachine.AddTransition(STATE_INIT, STATE_INIT, []() { return currentInput == INPUT_NULL; });
     stateMachine.AddTransition(STATE_INIT, STATE_MONITORING, []() { return currentInput == INPUT_CORRECT; });
@@ -26,12 +26,12 @@ byte stateTime = 0;
     stateMachine.AddTransition(STATE_MONITORING, STATE_BLOCKED, []() { return currentInput == INPUT_WRONG; });
 
     //Transiciones desde PMV_HIGH
-    stateMachine.AddTransition(STATE_PMV_HIGH, STATE_PMV_HIGH, []() { return  stateTime < 7; });
-    stateMachine.AddTransition(STATE_PMV_HIGH, STATE_MONITORING, []() { return stateTime > 7;  });
+    stateMachine.AddTransition(STATE_PMV_HIGH, STATE_PMV_HIGH, []() { return  currentInput == INPUT_PMV_HIGH; });
+    stateMachine.AddTransition(STATE_PMV_HIGH, STATE_MONITORING, []() { return currentInput == INPUT_CORRECT; });
 
     //Transiciones desde PMV_LOW
-    stateMachine.AddTransition(STATE_PMV_LOW, STATE_PMV_LOW, []() { return  stateTime < 4; });
-    stateMachine.AddTransition(STATE_PMV_LOW, STATE_MONITORING, []() { return stateTime > 4;  });
+    stateMachine.AddTransition(STATE_PMV_LOW, STATE_PMV_LOW, []() { return  currentInput == INPUT_PMV_LOW; });
+    stateMachine.AddTransition(STATE_PMV_LOW, STATE_MONITORING, []() { return currentInput == INPUT_CORRECT;  });
 
 
     //Metodos controladores.
@@ -46,4 +46,14 @@ byte stateTime = 0;
 
 void setInitialState(State initial) {
     stateMachine.SetState(initial, false, true);
+}
+void updateTimeExecute(){
+    if(stateEntryTime == 0) return;
+    stateTime = (millis() - stateEntryTime);
+}
+void startTime(){
+    if(stateEntryTime == 0) stateEntryTime = millis();
+}
+void restartTimes(){
+    stateEntryTime = stateTime = 0;    
 }

@@ -24,9 +24,11 @@ enum Input {
 
 extern StateMachine stateMachine;
 extern Input currentInput;
-extern unsigned long stateEntryTime;
+extern unsigned long stateTime;
 
 void setupStateMachine();
-void setInitialState(State initial);
-void updateStateEntryTime();  
+void setInitialState(State initial); 
+void updateTimeExecute();
+void startTime();
+void restartTimes();
 #endif
