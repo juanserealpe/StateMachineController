@@ -13,8 +13,8 @@ struct TarjetaRegistrada {
 };
 
 TarjetaRegistrada tarjetasConocidas[] = {
-  {{0x5C, 0xF8, 0xD7, 0x73}, 0},
-  {{0xF3, 0xAF, 0x2B, 0x27}, 1}  
+  {{0x5C, 0xF8, 0xD7, 0x73}, 2},
+  {{0xF3, 0xAF, 0x2B, 0x27}, -2}  
 };
 const int numTarjetas = sizeof(tarjetasConocidas) / sizeof(TarjetaRegistrada);
 
@@ -27,15 +27,8 @@ short readTarget() {
   // Primero verificar si hay una tarjeta presente
   if (!mfrc522.PICC_IsNewCardPresent()) {
     Serial.println("INSERTE TARJETA");
-    return -5; // Código para "no hay tarjeta"
+    return 0; // Código para "no hay tarjeta"
   }
-
-  // Intentar leer la tarjeta
-  if (!mfrc522.PICC_ReadCardSerial()) {
-    return -5; // Error al leer la tarjeta
-  }
-
-  // Comparar con tarjetas conocidas
   for (int i = 0; i < numTarjetas; i++) {
     bool coincide = true;
     
@@ -56,7 +49,7 @@ short readTarget() {
   }
 
   mfrc522.PICC_HaltA();
-  return -5; // Tarjeta no reconocida
+  return 0; // Tarjeta no reconocida
 }
 void registerTarget() {
   Serial.println("Registrando tarjeta...");
