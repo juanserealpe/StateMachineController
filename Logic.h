@@ -6,7 +6,7 @@
 #include <AsyncTaskLib.h>
 #include "states.h"
 //Externse
-extern byte alarmCount;
+extern int alarmCount;
 extern byte indx;
 extern char key;
 extern byte inputIndex;

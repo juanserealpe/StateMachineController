@@ -14,7 +14,7 @@
 void TimeOut();
 
 unsigned long currentTimeOut = 0;
-byte alarmCount = 0; 
+int alarmCount = 0; 
 char key;
 byte inputIndex = 0;
 byte failedAttempts = 0;
@@ -68,6 +68,7 @@ void onInit() {
 }
 
 void onBlocked(){
+
   showBlockSystem();
   if(readKeypad()) { 
     if(key == '#') {
@@ -76,38 +77,54 @@ void onBlocked(){
   }
 }
 void onMonitoring(){
+
+  resetRGB();
+  OffRGB();
   showMonitoringSystem();
   updateTemperature();
   short varTargetValue = readTarget();
   readLightSensor();
   Serial.println(currentTemperature);
-  if(LightValue < 10 || currentTemperature > 00.0){
+  if(LightValue < 10 || currentTemperature > 40.0){
     changeState(INPUT_ALARM);
   }
-  if(varTargetValue > 1) {changeState(INPUT_PMV_HIGH);}
+  if(varTargetValue > 1) {
+    //changeState(INPUT_PMV_HIGH);
+    changeState(INPUT_ALARM);
+    }
   else {
     if(varTargetValue < -1) {changeState(INPUT_PMV_LOW);}
   }
 }
-void onAlarm(){
-  if(!TaskTimeOut.IsActive()){
-    TaskTimeOut.SetIntervalMillis(5000);
-    TaskTimeOut.Start();
-    stopBuzzer();
-  }
-  TaskTimeOut.Update();
-  if(alarmCount == 2) {
-    alarmCount = 0;
-    resetBuzzer();
-    changeState(INPUT_WRONG);
-  }
-  showAccessGranted();
-  //Serial.println("En Alarma...");
-  if(!buzzerActive) startBuzzer();
-  updateBuzzer();
-}
+
+void onAlarm(){ 
+ 
+  alarmCount++; 
+  startAlarmLed(); 
+
+  if(!TaskTimeOut.IsActive()){ 
+    TaskTimeOut.SetIntervalMillis(5000); 
+    TaskTimeOut.Start(); 
+    stopBuzzer(); 
+  } 
+ 
+  if(alarmCount == 2) { 
+    alarmCount = 0; 
+    resetBuzzer(); 
+    changeState(INPUT_WRONG); 
+  } 
+
+  if(!buzzerActive) startBuzzer(); 
+  updateBuzzer(); 
+
+  ShowMessage1("En alarma");
+} 
 
 void onPMVHigh(){
+
+  resetRGB();
+  OffRGB();
+
   Serial.println("Entrando en HIGH...");
   if(!TaskTimeOut.IsActive()){
     TaskTimeOut.SetIntervalMillis(7000);
@@ -115,8 +132,6 @@ void onPMVHigh(){
     RestartAllLCD();
   } 
   ShowMessage1("En PmVHigh");
-  OnRed();
-  //Encencer calentador
 }
 void onPMVLow(){
   Serial.println("Entrando en LOW...");
@@ -126,8 +141,9 @@ void onPMVLow(){
     RestartAllLCD();
   } 
     ShowMessage1("En PmVLow");
-    ShowRed();
-  //Hacer lo otro  
+    
+    resetRGB();   // Siempre antes
+    ShowRed();    // Encender manualmente
 }
 
 void changeState(Input newInput){

@@ -17,7 +17,7 @@ void setup() {
   setupRGB();    
   setupTemperature();
   setupTemperature();
-  setupRFID(); 
+  setupRFID();
 }
 
 void loop() {

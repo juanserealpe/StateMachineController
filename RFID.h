@@ -8,7 +8,5 @@
 
 void setupRFID();
 short readTarget();
-void registerTarget();
-byte readPMV();
 
 #endif
