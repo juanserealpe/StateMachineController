@@ -11,7 +11,10 @@
 
 #define ARRAY_SIZE 4
 
+DHT dht(DHTPIN, DHTTYPE);
+
 void TimeOut();
+void ReadSensors();
 
 unsigned long currentTimeOut = 0;
 int alarmCount = 0; 
@@ -21,8 +24,37 @@ byte inputIndex = 0;
 byte failedAttempts = 0;
 char inputPassword[] = "****";
 char correctPassword[] = "1234";
+int CurrentLightValue = 0;
+float CurrentTemperature = 0;
+float Currenthumidity = 0;
 AsyncTask TaskTimeOut(currentTimeOut, false, TimeOut);
+AsyncTask TaskReadSensors(3000, false, ReadSensors);
 
+void ReadSensors(){
+  CurrentLightValue = analogRead(PIN_FOTORESISTOR);
+  Currenthumidity = dht.readHumidity();
+  CurrentTemperature = dht.readTemperature();
+  lcd.clear();
+  
+    // Mostrar en LCD (formato compacto)
+  lcd.setCursor(0, 0);   // Primera fila
+  lcd.print("H:"); 
+  if(Currenthumidity < 10) lcd.print("0");
+  lcd.print(Currenthumidity);
+  lcd.print("% ");
+  
+  lcd.print("L:");
+  if(CurrentLightValue < 10) lcd.print("0");
+  lcd.print(CurrentLightValue);
+  lcd.print("%");
+
+  lcd.setCursor(0, 1);   // Segunda fila
+  lcd.print("T:");
+  if(CurrentTemperature < 10) lcd.print("0");
+  lcd.print(CurrentTemperature);
+  lcd.print("C ");
+  
+}
 bool readKeypad() {
   key = keypad.getKey();
   return (key != NO_KEY);
@@ -79,19 +111,21 @@ void onBlocked(){
   }
 }
 void onMonitoring(){
+  if(!TaskReadSensors.IsActive()) TaskReadSensors.Start();
+  TaskReadSensors.Update();
   resetRGB();
   OffRGB();
   showMonitoringSystem();
   updateTemperature();
   short varTargetValue = readTarget();
   readLightSensor();
-  //Serial.println(currentTemperature);
-  if(LightValue < 10 || currentTemperature > 40.0){
+  Serial.println(currentTemperature);
+  if(LightValue < 10 && currentTemperature > 40.0){
     changeState(INPUT_ALARM);
   }
   if(varTargetValue > 1) {
-    //changeState(INPUT_PMV_HIGH);
-    changeState(INPUT_ALARM);
+    changeState(INPUT_PMV_HIGH);
+    //changeState(INPUT_ALARM);
     }
   else {
     if(varTargetValue < -1) {changeState(INPUT_PMV_LOW);}
@@ -165,6 +199,8 @@ void ResetVars(){
 }
 void ResetAll(){
   failedAttempts = 0;
+  TaskReadSensors.Stop();
+  TaskReadSensors.Reset();
   resetBuzzer(); 
   TaskTimeOut.Reset();
   RestartAllLCD();

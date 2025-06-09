@@ -18,6 +18,7 @@ void setup() {
   setupTemperature();
   setupTemperature();
   setupRFID();
+  dht.begin();
 }
 
 void loop() {

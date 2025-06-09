@@ -1,11 +1,17 @@
 #ifndef LOGIC_H
 #define LOGIC_H
+#include <DHT.h>
+
+#define DHTPIN 22  
+#define DHTTYPE DHT11
+#define PIN_FOTORESISTOR A0
 
 #include <Arduino.h>
 #include <Keypad.h>
 #include <AsyncTaskLib.h>
 #include "states.h"
 //Externse
+extern DHT dht;
 extern int alarmCount;
 extern byte indx;
 extern char key;
@@ -13,6 +19,9 @@ extern byte inputIndex;
 extern byte failedAttempts;
 extern char inputPassword[];
 extern char correctPassword[];
+extern int CurrentLightValue;
+extern float CurrentTemperature;
+extern float Currenthumidity;
 //Time
 extern AsyncTask TaskTimeOut;
 
