@@ -10,15 +10,22 @@
 void setup() {
   Serial.begin(9600);
   StartRGB();
+  setupBuzzer();  
+  startAlarmLed(); 
+  startBuzzer();
+  /*
   setupStateMachine();
   setupLCD();       
   setupRFID();   
   setupBuzzer();     
-  setupTemperature(); 
+  setupTemperature();
+  */
 }
 
 void loop() {
   stateMachine.Update();
   TaskclearLcd.Update();
   TaskTimeOut.Update();
+  updateRGB();
+  updateBuzzer();
 }
