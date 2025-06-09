@@ -1,6 +1,6 @@
 #ifndef LIGHTSENSOR_H
 #define LIGHTSENSOR_H
-#define PIN_LIGHTSENSOR 4
+#define PIN_LIGHTSENSOR A0
 #include <Arduino.h>
 
 extern int LightValue;

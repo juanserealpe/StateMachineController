@@ -12,8 +12,9 @@ void setup() {
   StartRGB();
   setupBuzzer();  
   startAlarmLed(); 
-  startBuzzer();
+  onAlarm();
   /*
+  startBuzzer();
   setupStateMachine();
   setupLCD();       
   setupRFID();   

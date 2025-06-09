@@ -87,6 +87,7 @@ void onAlarm(){
   if(!TaskTimeOut.IsActive()){
     TaskTimeOut.SetIntervalMillis(5000);
     TaskTimeOut.Start();
+    stopBuzzer();
   }
   TaskTimeOut.Update();
   if(alarmCount == 2) {
