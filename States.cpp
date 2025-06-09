@@ -22,7 +22,7 @@ void setupStateMachine() {
     stateMachine.AddTransition(STATE_MONITORING, STATE_PMV_LOW, []() { return currentInput == INPUT_PMV_LOW; });
     stateMachine.AddTransition(STATE_MONITORING, STATE_BLOCKED, []() { return currentInput == INPUT_WRONG; });
 
-    //Transiciones desde STATE_ALARM
+    //Transiciones desde STATE_ALARM      
     stateMachine.AddTransition(STATE_ALARM, STATE_MONITORING, []() { return currentInput == INPUT_CORRECT; });  
     stateMachine.AddTransition(STATE_ALARM, STATE_BLOCKED, []() { return currentInput == INPUT_WRONG; }); 
     stateMachine.AddTransition(STATE_ALARM, STATE_ALARM, []() { return currentInput == INPUT_ALARM; });     

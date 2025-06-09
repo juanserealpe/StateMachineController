@@ -16,6 +16,7 @@ void TimeOut();
 unsigned long currentTimeOut = 0;
 int alarmCount = 0; 
 char key;
+bool fromAlarm = false;
 byte inputIndex = 0;
 byte failedAttempts = 0;
 char inputPassword[] = "****";
@@ -77,14 +78,13 @@ void onBlocked(){
   }
 }
 void onMonitoring(){
-
   resetRGB();
   OffRGB();
   showMonitoringSystem();
   updateTemperature();
   short varTargetValue = readTarget();
   readLightSensor();
-  Serial.println(currentTemperature);
+  //Serial.println(currentTemperature);
   if(LightValue < 10 || currentTemperature > 40.0){
     changeState(INPUT_ALARM);
   }
@@ -98,25 +98,15 @@ void onMonitoring(){
 }
 
 void onAlarm(){ 
- 
-  alarmCount++; 
+  fromAlarm = true;
   startAlarmLed(); 
-
   if(!TaskTimeOut.IsActive()){ 
     TaskTimeOut.SetIntervalMillis(5000); 
     TaskTimeOut.Start(); 
     stopBuzzer(); 
   } 
- 
-  if(alarmCount == 2) { 
-    alarmCount = 0; 
-    resetBuzzer(); 
-    changeState(INPUT_WRONG); 
-  } 
-
   if(!buzzerActive) startBuzzer(); 
   updateBuzzer(); 
-
   ShowMessage1("En alarma");
 } 
 
@@ -151,23 +141,28 @@ void changeState(Input newInput){
   ResetAll();
 }
 void TimeOut(){
-  Serial.print(alarmCount);
-  resetBuzzer();
-  if(currentInput == INPUT_ALARM) alarmCount++;
-  else {
+  if(fromAlarm) alarmCount++;
+  else alarmCount = 0;
+  fromAlarm = false;
+  Serial.print(alarmCount);    
+  if(alarmCount >= 3) { 
+    alarmCount = 0; 
+    resetBuzzer(); 
+    changeState(INPUT_WRONG); 
+    return;
+  } 
     changeState(INPUT_CORRECT);
-    alarmCount = 0;
-  }
-  Serial.print(alarmCount);  
 }
 void ResetPassword(){
   for (byte idx = 0; idx < ARRAY_SIZE; idx++) inputPassword[idx] = '*';   
 }
 void ResetVars(){
     inputIndex = key = 0;
+    fromAlarm = false;
 }
 void ResetAll(){
   failedAttempts = 0;
+  resetBuzzer(); 
   TaskTimeOut.Reset();
   RestartAllLCD();
   ResetPassword(); 
