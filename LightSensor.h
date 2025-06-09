@@ -1,11 +1,12 @@
 #ifndef LIGHTSENSOR_H
 #define LIGHTSENSOR_H
-#define PIN_LIGHTSENSOR A0
+
 #include <Arduino.h>
 
-extern int LightValue;
+#define PIN_LIGHTSENSOR A0
+
+extern int LightValue;  // <- IMPORTANTE: esta línea exporta la variable
 
 void setupLightSensor();
-void ReadLightSensor();
-
+int readLightSensor();
 #endif

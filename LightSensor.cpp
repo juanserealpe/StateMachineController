@@ -6,6 +6,8 @@ void setupLightSensor() {
   pinMode(PIN_LIGHTSENSOR, INPUT);
 }
 
-void ReadLightSensor() {
-  LightValue = analogRead(PIN_LIGHTSENSOR);
+int readLightSensor() {
+  LightValue = analogRead(PIN_LIGHTSENSOR); 
+  return LightValue;
 }
+
