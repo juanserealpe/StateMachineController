@@ -69,10 +69,11 @@ void onInit() {
 }
 
 void onBlocked(){
-
+  startBucleLed(0);
   showBlockSystem();
   if(readKeypad()) { 
     if(key == '#') {
+      startBucleLed(1);
       changeState(INPUT_NULL);  
     }
   }
@@ -98,12 +99,14 @@ void onMonitoring(){
 }
 
 void onAlarm(){ 
+  startBucleLed(0);
   fromAlarm = true;
-  startAlarmLed(); 
+
   if(!TaskTimeOut.IsActive()){ 
     TaskTimeOut.SetIntervalMillis(5000); 
     TaskTimeOut.Start(); 
     stopBuzzer(); 
+    startBucleLed(1);
   } 
   if(!buzzerActive) startBuzzer(); 
   updateBuzzer(); 
