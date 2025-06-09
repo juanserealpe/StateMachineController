@@ -6,8 +6,6 @@
 #include "TemperatureSensor.h"
 #include "RGBLed.h"
 #include "RFID.h"
-#include <SPI.h>
-#include <MFRC522.h>
 
 void setup() {
   Serial.begin(9600);
@@ -20,9 +18,7 @@ void setup() {
 }
 
 void loop() {
-  updateTimeExecute();
   stateMachine.Update();
-  updateLCDMessage();
-  updateAlarm();
-  startRGBAlarm();
+  TaskclearLcd.Update();
+  TaskTimeOut.Update();
 }

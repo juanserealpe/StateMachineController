@@ -2,6 +2,8 @@
 #define TEMPERATURE_H
 
 #include <Arduino.h>
+#include <OneWire.h>
+#include <DallasTemperature.h>
 
 void setupTemperature();
 void updateTemperature();

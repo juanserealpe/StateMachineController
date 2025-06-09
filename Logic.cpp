@@ -1,21 +1,23 @@
 #include "Logic.h"
 #include "LCD.h" 
-#include "states.h"
 #include "MyKeypad.h" 
 #include "RGBLed.h"
-#include <Arduino.h>
 #include "RFID.h"
 #include "Buzzer.h"
+#include "states.h"
 
 #define ARRAY_SIZE 4
 
+void TimeOut();
+
+unsigned long currentTimeOut = 0;
 byte alarmCount = 0; 
 char key;
 byte inputIndex = 0;
 byte failedAttempts = 0;
 char inputPassword[] = "****";
 char correctPassword[] = "1234";
-
+AsyncTask TaskTimeOut(currentTimeOut, false, TimeOut);
 
 bool readKeypad() {
   key = keypad.getKey();
@@ -76,31 +78,46 @@ void onMonitoring(){
   if(varTargetValue > 1) changeState(INPUT_PMV_HIGH);
   else {
     if(varTargetValue < -1) changeState(INPUT_PMV_LOW);
+    //else if(Temp > 40 && luz < 10) changeState(INPUT_ALARM);
   }
 }
 void onAlarm(){
-  if(alarmCount == 3) changeState(INPUT_WRONG);
-  else {
-    soundAlarm();     
-    startRGBAlarm();  
-    alarmCount++;
+  if(alarmCount == 3) {
+    alarmCount = 0;
+    resetBuzzer();
+    changeState(INPUT_WRONG);
   }
 }
 
 void onPMVHigh(){
-  startTime();
-  if(stateTime >= 7000) changeState(INPUT_CORRECT);
-  else ShowGreen();
+  if(!TaskTimeOut.IsActive()){
+    TaskTimeOut.SetIntervalMillis(7000);
+    TaskTimeOut.Start();
+    RestartAllLCD();
+  } 
+  ShowMessage1("En PmVHigh");
+  //Encencer calentador
 }
 void onPMVLow(){
-  startTime();
-  if(stateTime >= 4000) changeState(INPUT_CORRECT);
-  else ShowBlue();  
+  if(!TaskTimeOut.IsActive()){
+    TaskTimeOut.SetIntervalMillis(4000);
+    TaskTimeOut.Start();
+    RestartAllLCD();
+  } 
+    ShowMessage1("En PmVLow");
+  //Hacer lo otro  
 }
 
 void changeState(Input newInput){
   currentInput = newInput;
   ResetAll();
+}
+void TimeOut(){
+  if(currentInput == INPUT_ALARM) alarmCount++;
+  else {
+    changeState(INPUT_CORRECT);
+    alarmCount = 0;
+  }
 }
 void ResetPassword(){
   for (byte idx = 0; idx < ARRAY_SIZE; idx++) inputPassword[idx] = '*';   
@@ -110,7 +127,8 @@ void ResetVars(){
 }
 void ResetAll(){
   failedAttempts = 0;
-  restartTimes();
+  TaskTimeOut.Reset();
+  RestartAllLCD();
   ResetPassword(); 
   ResetVars();
 }

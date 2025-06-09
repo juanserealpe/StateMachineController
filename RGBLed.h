@@ -1,6 +1,6 @@
 #ifndef RGBLed_H
 #define RGBLed_H
-
+#include <Arduino.h>
 #define PIN_RED 8
 #define PIN_GREEN 9
 #define PIN_BLUE 10
@@ -12,7 +12,5 @@ void ShowRGB(unsigned char red, unsigned char green, unsigned char blue);
 void ShowRed();
 void ShowGreen();
 void ShowBlue();
-void startRGBAlarm();
-void updateRGBAlarm();
 
 #endif

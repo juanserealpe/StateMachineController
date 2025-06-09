@@ -1,7 +1,7 @@
 #include "TemperatureSensor.h"
-#include "LCD.h"  
-#include <OneWire.h>
-#include <DallasTemperature.h>
+#include "LCD.h" 
+#include "TemperatureSensor.h" 
+
 // === Configuración del sensor ===
 #define ONE_WIRE_BUS 20 // Pin del sensor
 OneWire oneWire(ONE_WIRE_BUS);

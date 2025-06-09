@@ -3,6 +3,7 @@
 
 #include <Arduino.h>
 #include <Keypad.h>
+#include <AsyncTaskLib.h>
 #include "states.h"
 //Externse
 extern byte alarmCount;
@@ -13,9 +14,7 @@ extern byte failedAttempts;
 extern char inputPassword[];
 extern char correctPassword[];
 //Time
-extern unsigned long StartTimePmvHigh;
-extern unsigned long StartTimePmvLow;
-extern unsigned long StartTImeAlarm;
+extern AsyncTask TaskTimeOut;
 
 //Init
 bool readKeypad();

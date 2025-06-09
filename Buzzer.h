@@ -1,14 +1,16 @@
 #ifndef BUZZER_H
 #define BUZZER_H
 #include <Arduino.h>
+#include <AsyncTaskLib.h>
 
 #define buzzerPin 13
 
 void setupBuzzer();
-void startBuzzer(short duration);
 void updateBuzzer();
-void soundBuzzer();
-void updateAlarm();
-void soundAlarm();
+void startBuzzer();
+void resetBuzzer();
+void stopBuzzer();
+void OnBuzzer();
+void OffBuzzer();
 
 #endif

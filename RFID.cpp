@@ -1,8 +1,7 @@
-#include <Arduino.h>
 #include "RFID.h"
 #include "LCD.h"
 #include <SPI.h>
-#include <MFRC522.h>
+
 
 #define RST_PIN  32    // Pin para el reset del RC522   
 #define SS_PIN   53    // Pin para el SS (SDA) del RC522

@@ -1,19 +1,16 @@
 #include "LCD.h"
-#include <Arduino.h>
-#define MessageDuration 1500
 
 LiquidCrystal lcd(12, 11, 5, 4, 3, 2);
-
-unsigned long TimeStart = 0;
-unsigned long TimeMessage = 0;
-bool ShowingMessage = false;
+bool ShowingMessageWithoutTime = false;
+bool ShowingMessageWithTime = false;
+AsyncTask TaskclearLcd(MessageDuration, false, RestartAllLCD);
 
 void setupLCD() {
   lcd.begin(16, 2);
 }
 
 void showWelcomeMessage() {
-  ShowMessage("Ingresa clave: ");
+  ShowMessage1("Ingresa clave: ");
 }
 
 void showAccessGranted() {
@@ -26,10 +23,10 @@ void showAccessDenied() {
 }
 
 void showBlockSystem() {
-  ShowMessage("Bloqueado");
+  ShowMessage1("Bloqueado");
 }
 void showMonitoringSystem() {
-  ShowMessage("Monitoreando");
+  ShowMessage1("Monitoreando");
 }
 
 void printAsterisk(byte pos) {
@@ -37,33 +34,26 @@ void printAsterisk(byte pos) {
   lcd.print("*");
 }
 void ShowMessage(const char* pMessage, unsigned long pTime){
-
-  if(TimeStart == 0) ShowingMessage = false;
-  ShowMessage(pMessage);
-  TimeStart = millis();
-  TimeMessage = pTime;
+  if(ShowingMessageWithTime) return;
+  TaskclearLcd.Reset();
+  TaskclearLcd.Start();
+  ShowingMessageWithTime = true;
+  ShowingMessageWithoutTime = false;
+  ShowMessage1(pMessage);
   return;
 } 
-void ShowMessage(const char* pMessage){
-  if(ShowingMessage) return;
-  RestartOutput();
+void ShowMessage1(const char* pMessage){
+  if(ShowingMessageWithoutTime) return;
+  RestartOutputLCD();
   lcd.print(pMessage);
-  ShowingMessage = true;
+  ShowingMessageWithoutTime = true;
 }
-
-void updateLCDMessage(){
-  if(!ShowingMessage) return;
-  if(TimeStart == 0) return;
-  if((millis() - TimeStart) < TimeMessage) return;
-  RestartAll();
-}
-
-void RestartOutput(){
+void RestartOutputLCD(){
   lcd.clear();
   lcd.setCursor(0, 0);
 }
-void RestartAll(){
-  RestartOutput();
-  ShowingMessage = false;
-  TimeStart = TimeMessage = 0 ; 
+void RestartAllLCD(){
+  RestartOutputLCD();
+  TaskclearLcd.Reset();
+  ShowingMessageWithTime = ShowingMessageWithoutTime = false;
 }
