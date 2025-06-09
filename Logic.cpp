@@ -6,6 +6,8 @@
 #include "RFID.h"
 #include "Buzzer.h"
 #include "states.h"
+#include "LightSensor.h"
+#include "TemperatureSensor.h"
 
 #define ARRAY_SIZE 4
 
@@ -75,9 +77,13 @@ void onBlocked(){
 }
 void onMonitoring(){
   showMonitoringSystem();
+  updateTemperature();
   short varTargetValue = readTarget();
-//
-  if(alarmCount == 0 && varTargetValue == 0) changeState(INPUT_ALARM);
+  readLightSensor();
+  Serial.println(currentTemperature);
+  if(LightValue < 10 || currentTemperature > 00.0){
+    changeState(INPUT_ALARM);
+  }
   if(varTargetValue > 1) {changeState(INPUT_PMV_HIGH);}
   else {
     if(varTargetValue < -1) {changeState(INPUT_PMV_LOW);}
@@ -102,21 +108,25 @@ void onAlarm(){
 }
 
 void onPMVHigh(){
+  Serial.println("Entrando en HIGH...");
   if(!TaskTimeOut.IsActive()){
     TaskTimeOut.SetIntervalMillis(7000);
     TaskTimeOut.Start();
     RestartAllLCD();
   } 
   ShowMessage1("En PmVHigh");
+  OnRed();
   //Encencer calentador
 }
 void onPMVLow(){
+  Serial.println("Entrando en LOW...");
   if(!TaskTimeOut.IsActive()){
     TaskTimeOut.SetIntervalMillis(4000);
     TaskTimeOut.Start();
     RestartAllLCD();
   } 
     ShowMessage1("En PmVLow");
+    ShowRed();
   //Hacer lo otro  
 }
 

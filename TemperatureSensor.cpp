@@ -3,7 +3,7 @@
 #include "TemperatureSensor.h" 
 
 // === Configuración del sensor ===
-#define ONE_WIRE_BUS 20 // Pin del sensor
+#define ONE_WIRE_BUS 22 // Pin del sensor
 OneWire oneWire(ONE_WIRE_BUS);
 DallasTemperature sensors(&oneWire);
 
@@ -15,7 +15,6 @@ void setupTemperature() {
 void updateTemperature() {
   sensors.requestTemperatures();
   currentTemperature = sensors.getTempCByIndex(0);
-
   lcd.setCursor(0, 1); // Línea 2
   lcd.print("Temp: ");
   lcd.print(currentTemperature, 1); // Un decimal

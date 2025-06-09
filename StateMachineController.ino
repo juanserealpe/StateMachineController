@@ -9,18 +9,15 @@
 
 void setup() {
   Serial.begin(9600);
-  StartRGB();
   setupBuzzer();  
-  startAlarmLed(); 
-  onAlarm();
-  /*
-  startBuzzer();
   setupStateMachine();
   setupLCD();       
   setupRFID();   
-  setupBuzzer();     
+  setupBuzzer(); 
+  setupRGB();    
   setupTemperature();
-  */
+  setupTemperature();
+  setupRFID(); 
 }
 
 void loop() {

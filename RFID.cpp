@@ -24,33 +24,52 @@ void setupRFID() {
 }
 
 short readTarget() {
-  // Primero verificar si hay una tarjeta presente
+
+  delay(5000);
+  // Verificar si hay una tarjeta presente
   if (!mfrc522.PICC_IsNewCardPresent()) {
     Serial.println("INSERTE TARJETA");
-    return 0; // Código para "no hay tarjeta"
+    return 0;
   }
+
+  // Leer el UID de la tarjeta
+  if (!mfrc522.PICC_ReadCardSerial()) {
+    Serial.println("Error al leer la tarjeta");
+    return 0;
+  }
+
+  // Comparar con tarjetas conocidas
   for (int i = 0; i < numTarjetas; i++) {
     bool coincide = true;
-    
-    // Comparar byte por byte
+
     for (byte j = 0; j < 4; j++) {
       if (mfrc522.uid.uidByte[j] != tarjetasConocidas[i].uid[j]) {
         coincide = false;
         break;
       }
     }
-    
+
     if (coincide) {
       Serial.print("Tarjeta reconocida. Valor: ");
       Serial.println(tarjetasConocidas[i].valor);
       mfrc522.PICC_HaltA();
-      return tarjetasConocidas[i].valor; // Retorna 0 o 1
+      return tarjetasConocidas[i].valor;
     }
   }
 
+  // Si no coincide, imprimir UID
+  Serial.print("Tarjeta DESCONOCIDA. UID: ");
+  for (byte i = 0; i < mfrc522.uid.size; i++) {
+    Serial.print(mfrc522.uid.uidByte[i] < 0x10 ? "0" : "");
+    Serial.print(mfrc522.uid.uidByte[i], HEX);
+    Serial.print(" ");
+  }
+  Serial.println();
+
   mfrc522.PICC_HaltA();
-  return 0; // Tarjeta no reconocida
+  return 0;
 }
+
 void registerTarget() {
   Serial.println("Registrando tarjeta...");
 }

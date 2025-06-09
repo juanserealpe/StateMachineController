@@ -3,7 +3,7 @@
 
 StateMachine stateMachine(NUM_STATES, 17);
 
-Input currentInput = INPUT_CORRECT;
+Input currentInput = INPUT_NULL;
 
 void setupStateMachine() {
     // Transiciones desde INIT
