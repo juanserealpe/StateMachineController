@@ -26,7 +26,7 @@ void setupRFID() {
 short readTarget() {
 
   if (!mfrc522.PICC_IsNewCardPresent()) {
-    Serial.println("INSERTE TARJETA");
+    //Serial.println("INSERTE TARJETA");
     return 0;
   }
 
