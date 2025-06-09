@@ -1,3 +1,4 @@
+#include "HardwareSerial.h"
 #include "Logic.h"
 #include "LCD.h" 
 #include "MyKeypad.h" 
@@ -75,18 +76,28 @@ void onBlocked(){
 void onMonitoring(){
   showMonitoringSystem();
   short varTargetValue = readTarget();
-  if(varTargetValue > 1) changeState(INPUT_PMV_HIGH);
+//
+  if(alarmCount == 0 && varTargetValue == 0) changeState(INPUT_ALARM);
+  if(varTargetValue > 1) {changeState(INPUT_PMV_HIGH);}
   else {
-    if(varTargetValue < -1) changeState(INPUT_PMV_LOW);
-    //else if(Temp > 40 && luz < 10) changeState(INPUT_ALARM);
+    if(varTargetValue < -1) {changeState(INPUT_PMV_LOW);}
   }
 }
 void onAlarm(){
-  if(alarmCount == 3) {
+  if(!TaskTimeOut.IsActive()){
+    TaskTimeOut.SetIntervalMillis(5000);
+    TaskTimeOut.Start();
+  }
+  TaskTimeOut.Update();
+  if(alarmCount == 2) {
     alarmCount = 0;
     resetBuzzer();
     changeState(INPUT_WRONG);
   }
+  showAccessGranted();
+  //Serial.println("En Alarma...");
+  if(!buzzerActive) startBuzzer();
+  updateBuzzer();
 }
 
 void onPMVHigh(){
@@ -113,11 +124,14 @@ void changeState(Input newInput){
   ResetAll();
 }
 void TimeOut(){
+  Serial.print(alarmCount);
+  resetBuzzer();
   if(currentInput == INPUT_ALARM) alarmCount++;
   else {
     changeState(INPUT_CORRECT);
     alarmCount = 0;
   }
+  Serial.print(alarmCount);  
 }
 void ResetPassword(){
   for (byte idx = 0; idx < ARRAY_SIZE; idx++) inputPassword[idx] = '*';   
