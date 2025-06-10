@@ -10,7 +10,7 @@
 #include <AsyncTaskLib.h>
 
 /** @brief Pin digital conectado al buzzer. */
-#define buzzerPin 13
+#define buzzerPin 7
 
 /** @brief Flag que indica si el buzzer está activo (true/false). */
 extern bool buzzerActive;

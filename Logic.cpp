@@ -155,7 +155,7 @@ void onBlocked(){
  * @brief Estado de monitoreo activo.
  */
 void onMonitoring(){
-  digitalWrite(RELAY_FAN, HIGH);
+  digitalWrite(RELAY_FAN, LOW);
   if(!TaskReadSensors.IsActive()) TaskReadSensors.Start();
   else showMonitoringSystem();
   TaskReadSensors.Update();
@@ -166,10 +166,12 @@ void onMonitoring(){
   }
   if(varTargetValue > 1) {
     changeState(INPUT_PMV_HIGH);
-    //changeState(INPUT_ALARM);
   }
   else {
     if(varTargetValue < -1) {changeState(INPUT_PMV_LOW);}
+  }
+  if((readKeypad()) && (key == '*')){
+    changeState(INPUT_ALARM);
   }
 }
 
@@ -195,7 +197,7 @@ void onAlarm(){
  * @brief Estado de alta temperatura/ventilación forzada.
  */
 void onPMVHigh(){
-  digitalWrite(RELAY_FAN, LOW);
+  digitalWrite(RELAY_FAN, HIGH);
   resetRGB();
   OffRGB();
   if(!TaskTimeOut.IsActive()){

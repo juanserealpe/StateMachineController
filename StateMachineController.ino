@@ -40,7 +40,7 @@ void setup() {
 
   dht.begin();         // Inicia sensor DHT
   pinMode(RELAY_FAN, OUTPUT);  // Configura pin del ventilador como salida
-  digitalWrite(RELAY_FAN, HIGH);
+  digitalWrite(RELAY_FAN, LOW);
 }
 
 // Bucle principal =========================================================
