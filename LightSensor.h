@@ -5,7 +5,7 @@
 
 #define PIN_LIGHTSENSOR A0
 
-extern int LightValue;  // <- IMPORTANTE: esta línea exporta la variable
+extern int LightValue;  
 
 void setupLightSensor();
 int readLightSensor();
