@@ -1,3 +1,4 @@
+#include "Arduino.h"
 #include "HardwareSerial.h"
 #include "Logic.h"
 #include "LCD.h" 
@@ -151,7 +152,7 @@ void onPMVHigh(){
 
   resetRGB();
   OffRGB();
-
+  digitalWrite(RELAY_FAN, LOW);
   Serial.println("Entrando en HIGH...");
   if(!TaskTimeOut.IsActive()){
     TaskTimeOut.SetIntervalMillis(7000);

@@ -19,6 +19,7 @@ void setup() {
   setupTemperature();
   setupRFID();
   dht.begin();
+  pinMode(RELAY_FAN, OUTPUT);
 }
 
 void loop() {

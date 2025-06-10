@@ -5,6 +5,7 @@
 #define DHTPIN 22  
 #define DHTTYPE DHT11
 #define PIN_FOTORESISTOR A0
+#define RELAY_FAN 46
 
 #include <Arduino.h>
 #include <Keypad.h>
