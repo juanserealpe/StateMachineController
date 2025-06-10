@@ -40,6 +40,7 @@ char correctPassword[] = "1234";     /**< @brief Contraseña correcta del sistem
 int CurrentLightValue = 0;           /**< @brief Valor actual de luz ambiental. */
 float CurrentTemperature = 0;        /**< @brief Temperatura actual leída por el sensor. */
 float Currenthumidity = 0;           /**< @brief Humedad actual leída por el sensor. */
+short varTargetValue = 0;            /**< @brief Pmv actual leída por el RFID. */
 
 /** @brief Tarea asincrónica para manejar timeouts del sistema. */
 AsyncTask TaskTimeOut(currentTimeOut, false, TimeOut);
@@ -56,8 +57,7 @@ void ReadSensors(){
   CurrentTemperature = dht.readTemperature();
   lcd.clear();
   
-  // Mostrar en LCD (formato compacto)
-  lcd.setCursor(0, 0);   // Primera fila
+  lcd.setCursor(0, 0);   
   lcd.print("H:"); 
   if(Currenthumidity < 10) lcd.print("0");
   lcd.print(Currenthumidity);
@@ -68,11 +68,12 @@ void ReadSensors(){
   lcd.print(CurrentLightValue);
   lcd.print("%");
 
-  lcd.setCursor(0, 1);   // Segunda fila
+  lcd.setCursor(0, 1); 
   lcd.print("T:");
   if(CurrentTemperature < 10) lcd.print("0");
   lcd.print(CurrentTemperature);
-  lcd.print("C ");
+  lcd.print(" C");
+  varTargetValue = readTarget();
 }
 
 /**
@@ -91,10 +92,7 @@ void handleKey() {
   if(key == '#') checkPassword();
   else {
     printAsterisk(inputIndex);
-    if(inputIndex < 4) {
-      inputPassword[inputIndex] = key;
-      Serial.println(inputPassword[inputIndex]);
-    }
+    if(inputIndex < 4) { inputPassword[inputIndex] = key; }
     inputIndex++;
   }
 }
@@ -113,9 +111,7 @@ bool Equals(char* pChar1, char* pChar2) {
  * @brief Verifica si la contraseña ingresada es correcta.
  */
 void checkPassword() {
-  Serial.println("Checando Password");
   if(Equals(inputPassword, correctPassword)){
-    Serial.println("Contraseña correcta");
     showAccessGranted();
     changeState(INPUT_CORRECT);
   }
@@ -126,10 +122,8 @@ void checkPassword() {
  * @brief Maneja un intento fallido de contraseña.
  */
 void incorrectPassword(){
-  Serial.println("Contraseña incorrecta");
   showAccessDenied();
   failedAttempts++;
-  Serial.println(failedAttempts);
   ResetVars();
   ResetPassword();
 }
@@ -161,19 +155,18 @@ void onBlocked(){
  * @brief Estado de monitoreo activo.
  */
 void onMonitoring(){
+  digitalWrite(RELAY_FAN, HIGH);
   if(!TaskReadSensors.IsActive()) TaskReadSensors.Start();
+  else showMonitoringSystem();
   TaskReadSensors.Update();
   resetRGB();
   OffRGB();
-  updateTemperature();
-  short varTargetValue = readTarget();
-  readLightSensor();
   if(LightValue < 10 && currentTemperature > 40.0){
     changeState(INPUT_ALARM);
   }
   if(varTargetValue > 1) {
-    //changeState(INPUT_PMV_HIGH);
-    changeState(INPUT_ALARM);
+    changeState(INPUT_PMV_HIGH);
+    //changeState(INPUT_ALARM);
   }
   else {
     if(varTargetValue < -1) {changeState(INPUT_PMV_LOW);}
@@ -202,15 +195,14 @@ void onAlarm(){
  * @brief Estado de alta temperatura/ventilación forzada.
  */
 void onPMVHigh(){
+  digitalWrite(RELAY_FAN, LOW);
   resetRGB();
   OffRGB();
-  digitalWrite(RELAY_FAN, LOW);
-  Serial.println("Entrando en HIGH...");
   if(!TaskTimeOut.IsActive()){
     TaskTimeOut.SetIntervalMillis(7000);
     TaskTimeOut.Start();
     RestartAllLCD();
-  } 
+  }  
   ShowMessage1("En PmVHigh");
 }
 
@@ -218,7 +210,6 @@ void onPMVHigh(){
  * @brief Estado de baja temperatura/ventilación desactivada.
  */
 void onPMVLow(){
-  Serial.println("Entrando en LOW...");
   if(!TaskTimeOut.IsActive()){
     TaskTimeOut.SetIntervalMillis(4000);
     TaskTimeOut.Start();
@@ -244,8 +235,7 @@ void changeState(Input newInput){
 void TimeOut(){
   if(fromAlarm) alarmCount++;
   else alarmCount = 0;
-  fromAlarm = false;
-  Serial.print(alarmCount);    
+  fromAlarm = false;   
   if(alarmCount >= 3) { 
     alarmCount = 0; 
     resetBuzzer(); 
@@ -274,7 +264,7 @@ void ResetVars(){
  * @brief Reinicio completo del sistema.
  */
 void ResetAll(){
-  failedAttempts = 0;
+  failedAttempts = varTargetValue = 0;
   TaskReadSensors.Stop();
   TaskReadSensors.Reset();
   resetBuzzer(); 
